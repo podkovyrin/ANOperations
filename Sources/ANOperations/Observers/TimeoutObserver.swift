@@ -12,20 +12,20 @@ import Foundation
  `TimeoutObserver` is a way to make an `ANOperation` automatically time out and
  cancel after a specified time interval.
  */
-class TimeoutObserver: OperationObserver {
+public final class TimeoutObserver: OperationObserver {
     // MARK: Properties
 
     private let timeout: TimeInterval
 
     // MARK: Initialization
 
-    init(timeout: TimeInterval) {
+    public init(timeout: TimeInterval) {
         self.timeout = timeout
     }
 
     // MARK: OperationObserver
 
-    func operationDidStart(_ operation: ANOperation) {
+    public func operationDidStart(_ operation: ANOperation) {
         // When the operation starts, queue up a block to cause it to time out.
         let when = DispatchTime.now() + timeout
 
@@ -41,15 +41,15 @@ class TimeoutObserver: OperationObserver {
         }
     }
 
-    func operationDidCancel(_ operation: ANOperation) {
+    public func operationDidCancel(_ operation: ANOperation) {
         // No op.
     }
 
-    func operation(_ operation: ANOperation, didProduceOperation newOperation: Operation) {
+    public func operation(_ operation: ANOperation, didProduceOperation newOperation: Operation) {
         // No op.
     }
 
-    func operationDidFinish(_ operation: ANOperation, errors: [Error]) {
+    public func operationDidFinish(_ operation: ANOperation, errors: [Error]) {
         // No op.
     }
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-extension DispatchQoS.QoSClass {
+public extension DispatchQoS.QoSClass {
     init(qos: QualityOfService) {
         switch qos {
         case .userInteractive:

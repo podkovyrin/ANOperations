@@ -12,7 +12,7 @@ import Foundation
  The protocol that types may implement if they wish to be notified of significant
  operation lifecycle events.
  */
-protocol OperationObserver {
+public protocol OperationObserver {
     /// Invoked immediately prior to the `ANOperation`'s `execute()` method.
     func operationDidStart(_ operation: ANOperation)
 

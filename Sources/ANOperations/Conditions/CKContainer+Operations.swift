@@ -24,9 +24,9 @@ extension CKContainer {
      operation fails. If the verification was successful, this value will
      be `nil`.
      */
-    func verify(_ permission: CKContainer.Application.Permissions = [],
-                request shouldRequest: Bool = false,
-                completion: @escaping (Error?) -> Void) {
+    public func verify(_ permission: CKContainer.Application.Permissions = [],
+                       request shouldRequest: Bool = false,
+                       completion: @escaping (Error?) -> Void) {
         verifyAccountStatus(self, permission: permission, shouldRequest: shouldRequest, completion: completion)
     }
 }

@@ -8,26 +8,26 @@
 import Foundation
 
 /// A generic condition for describing kinds of operations that may not execute concurrently.
-struct MutuallyExclusive<T>: OperationCondition {
-    static var name: String {
+public struct MutuallyExclusive<T>: OperationCondition {
+    public static var name: String {
         return "MutuallyExclusive<\(T.self)>"
     }
 
-    static var isMutuallyExclusive: Bool {
+    public static var isMutuallyExclusive: Bool {
         return true
     }
 
-    init() {}
+    public init() {}
 
-    func dependency(for operation: ANOperation) -> Operation? {
+    public func dependency(for operation: ANOperation) -> Operation? {
         return nil
     }
 
-    func evaluate(for operation: ANOperation, completion: @escaping (OperationConditionResult) -> Void) {
+    public func evaluate(for operation: ANOperation, completion: @escaping (OperationConditionResult) -> Void) {
         completion(.success)
     }
 }
 
-enum Alert {}
+public enum Alert {}
 
-typealias AlertPresentation = MutuallyExclusive<Alert>
+public typealias AlertPresentation = MutuallyExclusive<Alert>

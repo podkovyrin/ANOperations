@@ -13,7 +13,7 @@ import Foundation
  A protocol for defining conditions that must be satisfied in order for an
  operation to begin execution.
  */
-protocol OperationCondition {
+public protocol OperationCondition {
     /**
      The name of the condition. This is used in userInfo dictionaries of `.ConditionFailed`
      errors as the value of the `OperationConditionKey` key.
@@ -48,7 +48,7 @@ protocol OperationCondition {
  An enum to indicate whether an `OperationCondition` was satisfied, or if it
  failed with an error.
  */
-enum OperationConditionResult {
+public enum OperationConditionResult {
     case success
     case failure(Error)
 }
@@ -64,10 +64,10 @@ private extension OperationConditionResult {
 
 // MARK: Evaluate Conditions
 
-struct OperationConditionEvaluator {
-    static func evaluate(_ conditions: [OperationCondition],
-                         operation: ANOperation,
-                         completion: @escaping ([Error]) -> Void) {
+public struct OperationConditionEvaluator {
+    public static func evaluate(_ conditions: [OperationCondition],
+                                operation: ANOperation,
+                                completion: @escaping ([Error]) -> Void) {
         // Check conditions.
         let conditionGroup = DispatchGroup()
 

@@ -16,7 +16,7 @@ import Foundation
  extended readiness requirements, as well as notify many interested parties
  about interesting operation state changes
  */
-class ANOperation: Operation {
+open class ANOperation: Operation {
     private static var anoperationContext = 0
 
     /*
@@ -24,7 +24,7 @@ class ANOperation: Operation {
      BlockObserver executes in an expected manner.
      */
     @available(*, deprecated, message: "use BlockObserver completions instead")
-    override var completionBlock: (() -> Void)? {
+    open override var completionBlock: (() -> Void)? {
         // swiftlint:disable unused_setter_value
         set {
             fatalError("The completionBlock property on NSOperation has unexpected behavior and is not supported")
@@ -56,7 +56,7 @@ class ANOperation: Operation {
         return [KeyPaths.cancelledState]
     }
 
-    override init() {
+    public override init() {
         super.init()
         addObserver(self, forKeyPath: KeyPaths.isReady, options: [], context: &ANOperation.anoperationContext)
     }
@@ -65,10 +65,10 @@ class ANOperation: Operation {
         self.removeObserver(self, forKeyPath: KeyPaths.isReady, context: &ANOperation.anoperationContext)
     }
 
-    override func observeValue(forKeyPath keyPath: String?,
-                               of object: Any?,
-                               change: [NSKeyValueChangeKey: Any]?,
-                               context: UnsafeMutableRawPointer?) {
+    open override func observeValue(forKeyPath keyPath: String?,
+                                    of object: Any?,
+                                    change: [NSKeyValueChangeKey: Any]?,
+                                    context: UnsafeMutableRawPointer?) {
         guard context == &ANOperation.anoperationContext else {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
             return
@@ -83,7 +83,7 @@ class ANOperation: Operation {
      Indicates that the ANOperation can now begin to evaluate readiness conditions,
      if appropriate.
      */
-    func didEnqueue() {
+    open func didEnqueue() {
         stateAccess.lock()
         defer { stateAccess.unlock() }
         state = .pending
@@ -120,7 +120,7 @@ class ANOperation: Operation {
     }
 
     // Here is where we extend our definition of "readiness".
-    override var isReady: Bool {
+    public override var isReady: Bool {
         stateAccess.lock()
         defer { stateAccess.unlock() }
 
@@ -136,7 +136,7 @@ class ANOperation: Operation {
         }
     }
 
-    var userInitiated: Bool {
+    public var userInitiated: Bool {
         get {
             return qualityOfService == .userInitiated
         }
@@ -149,11 +149,11 @@ class ANOperation: Operation {
         }
     }
 
-    override var isExecuting: Bool {
+    public override var isExecuting: Bool {
         return state == .executing
     }
 
-    override var isFinished: Bool {
+    public override var isFinished: Bool {
         return state == .finished
     }
 
@@ -194,7 +194,7 @@ class ANOperation: Operation {
         }
     }
 
-    override var isCancelled: Bool {
+    public override var isCancelled: Bool {
         return _cancelled
     }
 
@@ -225,28 +225,28 @@ class ANOperation: Operation {
 
     // MARK: Observers and Conditions
 
-    private(set) var conditions: [OperationCondition] = []
+    public private(set) var conditions: [OperationCondition] = []
 
-    func addCondition(_ condition: OperationCondition) {
+    public func addCondition(_ condition: OperationCondition) {
         assert(state < .evaluatingConditions, "Cannot modify conditions after execution has begun.")
         conditions.append(condition)
     }
 
     private(set) var observers: [OperationObserver] = []
 
-    func addObserver(_ observer: OperationObserver) {
+    public func addObserver(_ observer: OperationObserver) {
         assert(state < .executing, "Cannot modify observers after execution has begun.")
         observers.append(observer)
     }
 
-    override func addDependency(_ operation: Operation) {
+    public override func addDependency(_ operation: Operation) {
         assert(state <= .executing, "Dependencies cannot be modified after execution has begun.")
         super.addDependency(operation)
     }
 
     // MARK: Execution and Cancellation
 
-    final override func main() {
+    public final override func main() {
         stateAccess.lock()
 
         assert(state == .ready, "This operation must be performed on an operation queue.")
@@ -277,7 +277,7 @@ class ANOperation: Operation {
      finished its execution, and that operations dependent on yours can re-evaluate
      their readiness state.
      */
-    func execute() {
+    open func execute() {
         print("\(type(of: self)) must override `execute()`.")
 
         finish()
@@ -298,11 +298,11 @@ class ANOperation: Operation {
         }
     }
 
-    var errors: [Error] {
+    public var errors: [Error] {
         return internalErrors
     }
 
-    override func cancel() {
+    open override func cancel() {
         stateAccess.lock()
         defer { stateAccess.unlock() }
         guard !isFinished else { return }
@@ -314,16 +314,16 @@ class ANOperation: Operation {
         }
     }
 
-    func cancelWithErrors(_ errors: [Error]) {
+    open func cancelWithErrors(_ errors: [Error]) {
         internalErrors += errors
         cancel()
     }
 
-    func cancelWithError(_ error: Error) {
+    open func cancelWithError(_ error: Error) {
         cancelWithErrors([error])
     }
 
-    final func produceOperation(_ operation: Operation) {
+    public final func produceOperation(_ operation: Operation) {
         for observer in observers {
             observer.operation(self, didProduceOperation: operation)
         }
@@ -339,7 +339,7 @@ class ANOperation: Operation {
      for how an error from an `NSURLSession` is passed along via the
      `finishWithError()` method.
      */
-    final func finishWithError(_ error: Error?) {
+    public final func finishWithError(_ error: Error?) {
         if let error = error {
             finish([error])
         }
@@ -354,7 +354,7 @@ class ANOperation: Operation {
      */
     private var hasFinishedAlready = false
 
-    final func finish(_ errors: [Error] = []) {
+    public final func finish(_ errors: [Error] = []) {
         stateAccess.lock()
         defer { stateAccess.unlock() }
         guard !hasFinishedAlready else { return }
@@ -379,10 +379,10 @@ class ANOperation: Operation {
      this method to potentially inform the user about an error when trying to
      bring up the Core Data stack.
      */
-    func finished(_ errors: [Error]) {}
+    open func finished(_ errors: [Error]) {}
 
     // swiftlint:disable unavailable_function
-    override func waitUntilFinished() {
+    open override func waitUntilFinished() {
         /*
          Waiting on operations is almost NEVER the right thing to do. It is
          usually superior to use proper locking constructs, such as `dispatch_semaphore_t`

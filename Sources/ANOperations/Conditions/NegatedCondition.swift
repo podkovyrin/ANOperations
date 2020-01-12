@@ -12,26 +12,26 @@ import Foundation
  This is useful (for example) if you want to only execute an operation if the
  network is NOT reachable.
  */
-struct NegatedCondition<T: OperationCondition>: OperationCondition {
-    static var name: String {
+public struct NegatedCondition<T: OperationCondition>: OperationCondition {
+    public static var name: String {
         return "Not<\(T.name)>"
     }
 
-    static var isMutuallyExclusive: Bool {
+    public static var isMutuallyExclusive: Bool {
         return T.isMutuallyExclusive
     }
 
-    let condition: T
+    public let condition: T
 
-    init(condition: T) {
+    public init(condition: T) {
         self.condition = condition
     }
 
-    func dependency(for operation: ANOperation) -> Operation? {
+    public func dependency(for operation: ANOperation) -> Operation? {
         return condition.dependency(for: operation)
     }
 
-    func evaluate(for operation: ANOperation, completion: @escaping (OperationConditionResult) -> Void) {
+    public func evaluate(for operation: ANOperation, completion: @escaping (OperationConditionResult) -> Void) {
         condition.evaluate(for: operation) { result in
             switch result {
             case .success:

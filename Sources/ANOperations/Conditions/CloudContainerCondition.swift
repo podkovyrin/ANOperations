@@ -9,17 +9,17 @@ import CloudKit
 import Foundation
 
 /// A condition describing that the operation requires access to a specific CloudKit container.
-struct CloudContainerCondition: OperationCondition {
-    static let name = "CloudContainer"
+public struct CloudContainerCondition: OperationCondition {
+    public static let name = "CloudContainer"
 
     /*
      CloudKit has no problem handling multiple operations at the same time
      so we will allow operations that use CloudKit to be concurrent with each
      other.
      */
-    static let isMutuallyExclusive = false
+    public static let isMutuallyExclusive = false
 
-    let permission: CKContainer.Application.Permissions
+    public let permission: CKContainer.Application.Permissions
 
     // this is the container to which you need access.
     private let container: CKContainer
@@ -30,16 +30,16 @@ struct CloudContainerCondition: OperationCondition {
      container. This parameter has a default value of `[]`, which would get
      you anonymized read/write access.
      */
-    init(container: CKContainer, permission: CKContainer.Application.Permissions = []) {
+    public init(container: CKContainer, permission: CKContainer.Application.Permissions = []) {
         self.container = container
         self.permission = permission
     }
 
-    func dependency(for operation: ANOperation) -> Operation? {
+    public func dependency(for operation: ANOperation) -> Operation? {
         return CloudKitPermissionOperation(container: container, permission: permission)
     }
 
-    func evaluate(for operation: ANOperation, completion: @escaping (OperationConditionResult) -> Void) {
+    public func evaluate(for operation: ANOperation, completion: @escaping (OperationConditionResult) -> Void) {
         container.verify(permission, request: false) { error in
             if let error = error {
                 completion(.failure(error))

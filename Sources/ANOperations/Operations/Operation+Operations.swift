@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Operation {
+public extension Operation {
     /**
      Add a completion block to be executed after the `NSOperation` enters the
      "finished" state.

@@ -18,7 +18,7 @@ import Foundation
  For example, `GroupOperation` is the delegate of its own internal
  `OperationQueue` and uses it to manage dependencies.
  */
-@objc protocol ANOperationQueueDelegate: AnyObject {
+@objc public protocol ANOperationQueueDelegate: AnyObject {
     @objc
     optional func operationQueue(_ operationQueue: OperationQueue,
                                  willAddOperation operation: Operation)
@@ -36,10 +36,10 @@ import Foundation
  - Extracting generated dependencies from operation conditions
  - Setting up dependencies to enforce mutual exclusivity
  */
-class ANOperationQueue: OperationQueue {
-    weak var delegate: ANOperationQueueDelegate?
+open class ANOperationQueue: OperationQueue {
+    public weak var delegate: ANOperationQueueDelegate?
 
-    override func addOperation(_ operation: Operation) {
+    public override func addOperation(_ operation: Operation) {
         if let operation = operation as? ANOperation {
             // Set up a `BlockObserver` to invoke the `OperationQueueDelegate` method.
             let delegate = BlockObserver(
@@ -113,7 +113,7 @@ class ANOperationQueue: OperationQueue {
         }
     }
 
-    override func addOperations(_ operations: [Operation], waitUntilFinished wait: Bool) {
+    public override func addOperations(_ operations: [Operation], waitUntilFinished wait: Bool) {
         /*
          The base implementation of this method does not call `addOperation()`,
          so we'll call it ourselves.

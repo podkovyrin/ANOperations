@@ -8,22 +8,22 @@
 
 import Foundation
 
-class CompletionObserver: OperationObserver {
+public final class CompletionObserver: OperationObserver {
     private let completion: (ANOperation, [Error]) -> Void
 
-    init(_ completion: @escaping (ANOperation, [Error]) -> Void) {
+    public init(_ completion: @escaping (ANOperation, [Error]) -> Void) {
         self.completion = completion
     }
 
     // MARK: OperationObserver
 
-    func operationDidStart(_ operation: ANOperation) {}
+    public func operationDidStart(_ operation: ANOperation) {}
 
-    func operationDidCancel(_ operation: ANOperation) {}
+    public func operationDidCancel(_ operation: ANOperation) {}
 
-    func operation(_ operation: ANOperation, didProduceOperation newOperation: Operation) {}
+    public func operation(_ operation: ANOperation, didProduceOperation newOperation: Operation) {}
 
-    func operationDidFinish(_ operation: ANOperation, errors: [Error]) {
+    public func operationDidFinish(_ operation: ANOperation, errors: [Error]) {
         DispatchQueue.main.async {
             self.completion(operation, errors)
         }

@@ -12,7 +12,7 @@ import Foundation
  The `BlockObserver` is a way to attach arbitrary blocks to significant events
  in an `ANOperation`'s lifecycle.
  */
-class BlockObserver: OperationObserver {
+public final class BlockObserver: OperationObserver {
     // MARK: Properties
 
     private let startHandler: ((ANOperation) -> Void)?
@@ -20,10 +20,10 @@ class BlockObserver: OperationObserver {
     private let produceHandler: ((ANOperation, Operation) -> Void)?
     private let finishHandler: ((ANOperation, [Error]) -> Void)?
 
-    init(startHandler: ((ANOperation) -> Void)? = nil,
-         cancelHandler: ((ANOperation) -> Void)? = nil,
-         produceHandler: ((ANOperation, Operation) -> Void)? = nil,
-         finishHandler: ((ANOperation, [Error]) -> Void)? = nil) {
+    public init(startHandler: ((ANOperation) -> Void)? = nil,
+                cancelHandler: ((ANOperation) -> Void)? = nil,
+                produceHandler: ((ANOperation, Operation) -> Void)? = nil,
+                finishHandler: ((ANOperation, [Error]) -> Void)? = nil) {
         self.startHandler = startHandler
         self.cancelHandler = cancelHandler
         self.produceHandler = produceHandler
@@ -32,19 +32,19 @@ class BlockObserver: OperationObserver {
 
     // MARK: OperationObserver
 
-    func operationDidStart(_ operation: ANOperation) {
+    public func operationDidStart(_ operation: ANOperation) {
         startHandler?(operation)
     }
 
-    func operationDidCancel(_ operation: ANOperation) {
+    public func operationDidCancel(_ operation: ANOperation) {
         cancelHandler?(operation)
     }
 
-    func operation(_ operation: ANOperation, didProduceOperation newOperation: Operation) {
+    public func operation(_ operation: ANOperation, didProduceOperation newOperation: Operation) {
         produceHandler?(operation, newOperation)
     }
 
-    func operationDidFinish(_ operation: ANOperation, errors: [Error]) {
+    public func operationDidFinish(_ operation: ANOperation, errors: [Error]) {
         finishHandler?(operation, errors)
     }
 }

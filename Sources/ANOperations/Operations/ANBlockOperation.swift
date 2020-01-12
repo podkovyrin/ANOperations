@@ -9,10 +9,10 @@
 import Foundation
 
 /// A closure type that takes a closure as its parameter.
-typealias OperationBlock = (@escaping () -> Void) -> Void
+public typealias OperationBlock = (@escaping () -> Void) -> Void
 
 /// A sublcass of `ANOperation` to execute a closure.
-class ANBlockOperation: ANOperation {
+public final class ANBlockOperation: ANOperation {
     private let block: OperationBlock?
 
     /**
@@ -24,7 +24,7 @@ class ANBlockOperation: ANOperation {
          will never finish executing. If this parameter is `nil`, the operation
          will immediately finish.
      */
-    init(block: OperationBlock? = nil) {
+    public init(block: OperationBlock? = nil) {
         self.block = block
         super.init()
     }
@@ -37,7 +37,7 @@ class ANBlockOperation: ANOperation {
          the designated initializer). The operation will be automatically ended
          after the `mainQueueBlock` is executed.
      */
-    convenience init(mainQueueBlock: @escaping () -> Void) {
+    public convenience init(mainQueueBlock: @escaping () -> Void) {
         self.init(block: { continuation in
             DispatchQueue.main.async {
                 mainQueueBlock()
@@ -46,7 +46,7 @@ class ANBlockOperation: ANOperation {
         })
     }
 
-    override func execute() {
+    public override func execute() {
         if let block = block {
             block {
                 self.finish()

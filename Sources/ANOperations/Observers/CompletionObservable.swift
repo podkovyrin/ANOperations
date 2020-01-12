@@ -8,11 +8,11 @@
 
 import Foundation
 
-protocol CompletionObservable {}
+public protocol CompletionObservable {}
 
 extension ANOperation: CompletionObservable {}
 
-extension CompletionObservable where Self: ANOperation {
+public extension CompletionObservable where Self: ANOperation {
     func addCompletionObserver(_ completion: @escaping (Self, [Error]) -> Void) {
         addObserver(CompletionObserver { _, errors in
             completion(self, errors)
