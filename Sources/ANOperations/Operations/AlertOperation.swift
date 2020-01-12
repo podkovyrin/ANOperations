@@ -5,6 +5,8 @@
 //  Modified by Andrew Podkovyrin, 2019
 //
 
+#if !os(macOS)
+
 import UIKit
 
 class AlertOperation: ANOperation {
@@ -72,3 +74,5 @@ class AlertOperation: ANOperation {
         }
     }
 }
+
+#endif
