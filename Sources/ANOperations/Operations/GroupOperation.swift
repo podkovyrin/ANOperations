@@ -42,6 +42,8 @@ open class GroupOperation: ANOperation {
             }
         }
     }
+    
+    private let cancelLock = NSLock()
 
     public convenience init(operations: Operation...) {
         self.init(operations: operations)
@@ -60,9 +62,13 @@ open class GroupOperation: ANOperation {
     }
 
     open override func cancel() {
+        cancelLock.lock()
+        
         internalQueue.cancelAllOperations()
         internalQueue.isSuspended = false
         super.cancel()
+        
+        cancelLock.unlock()
     }
 
     open override func execute() {
@@ -122,7 +128,10 @@ extension GroupOperation: ANOperationQueueDelegate {
 
         if operation === finishingOperation {
             internalQueue.isSuspended = true
+            
+            cancelLock.lock()
             finish(aggregatedErrors)
+            cancelLock.unlock()
         }
         else if operation !== startingOperation {
             operationDidFinish(operation, withErrors: errors)
