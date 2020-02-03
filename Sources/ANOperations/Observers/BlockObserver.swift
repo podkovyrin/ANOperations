@@ -15,10 +15,10 @@ import Foundation
 public final class BlockObserver: OperationObserver {
     // MARK: Properties
 
-    private let startHandler: ((ANOperation) -> Void)?
-    private let cancelHandler: ((ANOperation) -> Void)?
-    private let produceHandler: ((ANOperation, Operation) -> Void)?
-    private let finishHandler: ((ANOperation, [Error]) -> Void)?
+    private var startHandler: ((ANOperation) -> Void)?
+    private var cancelHandler: ((ANOperation) -> Void)?
+    private var produceHandler: ((ANOperation, Operation) -> Void)?
+    private var finishHandler: ((ANOperation, [Error]) -> Void)?
 
     public init(startHandler: ((ANOperation) -> Void)? = nil,
                 cancelHandler: ((ANOperation) -> Void)? = nil,
@@ -46,5 +46,11 @@ public final class BlockObserver: OperationObserver {
 
     public func operationDidFinish(_ operation: ANOperation, errors: [Error]) {
         finishHandler?(operation, errors)
+        
+        // cleanup
+        startHandler = nil
+        cancelHandler = nil
+        produceHandler = nil
+        finishHandler = nil
     }
 }

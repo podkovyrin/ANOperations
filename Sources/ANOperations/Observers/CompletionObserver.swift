@@ -9,7 +9,7 @@
 import Foundation
 
 public final class CompletionObserver: OperationObserver {
-    private let completion: (ANOperation, [Error]) -> Void
+    private var completion: ((ANOperation, [Error]) -> Void)?
 
     public init(_ completion: @escaping (ANOperation, [Error]) -> Void) {
         self.completion = completion
@@ -25,7 +25,8 @@ public final class CompletionObserver: OperationObserver {
 
     public func operationDidFinish(_ operation: ANOperation, errors: [Error]) {
         DispatchQueue.main.async {
-            self.completion(operation, errors)
+            self.completion?(operation, errors)
+            self.completion = nil
         }
     }
 }
